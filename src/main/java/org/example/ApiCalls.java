@@ -32,23 +32,22 @@ public String[] drawCard(String numberOfCardsToDraw) throws UnirestException {
     Unirest.setTimeouts(0, 0);
 
         HttpResponse<JsonNode> response =
-                Unirest.get("https://deckofcardsapi.com/api/deck/5vcv3m9i8hcy/draw/?count="+numberOfCardsToDraw)
+                Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/draw/?count="+numberOfCardsToDraw)
                 .asJson();
 
  //  System.out.println(response.getBody().getObject().getJSONArray("cards"));
 
   JSONArray sevenCards =  response.getBody().getObject().getJSONArray("cards");
-    System.out.println(sevenCards.length());
+
 
     for(int i = 0; i< sevenCards.length(); i++){
-//      System.out.println(sevenCards.getJSONObject(i).getString("code"));
       drawnCards[i]=sevenCards.getJSONObject(i).getString("code");
   }
 
-    System.out.println(Arrays.toString(drawnCards));
 
 
-    return null;
+
+    return drawnCards;
 }
 
 
@@ -59,16 +58,20 @@ public void reshuffle(){
 }
 
 
-public void addingToPiles() throws UnirestException {
+public void addingToPiles(String deckId, String pileName, String[] cardsToAdd) throws UnirestException {
 
-    //todo: name the piles player1_hand/player2_hand/set_pile maybe
+
+    String joinedString = String.join(",", cardsToAdd);
+
+
+    //todo: make different piles for player1_hand/player2_hand/set_pile maybe
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/5vcv3m9i8hcy/pile/test/add/?cards=6D")
+            Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/pile/" + pileName + "/add/?cards="+ joinedString)
                     .asJson();
 
-    System.out.println(response.getBody());
+   // System.out.println(response.getBody());
 
 }
 
@@ -78,7 +81,7 @@ public void playerOnePile(String drawnCard) throws UnirestException {
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/5vcv3m9i8hcy/pile/playerOne/add/?cards="+drawnCard)
+            Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/pile/playerOne/add/?cards="+drawnCard)
                     .asJson();
 
     System.out.println(response.getBody());
@@ -92,10 +95,23 @@ public void listPiles(String pileName, String deckId) throws UnirestException {
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/5vcv3m9i8hcy/pile/" + pileName + "/list/")
+            Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/pile/" + pileName + "/list/")
                     .asJson();
 
-    System.out.println(response.getBody());
+    JSONArray pileCards = response.getBody().
+                          getObject().
+                          getJSONObject("piles").
+                          getJSONObject(pileName).
+                          getJSONArray("cards");
+
+    System.out.println(pileCards.length());
+
+    for(int i = 0; i<pileCards.length(); i++) {
+        System.out.println(pileCards.getJSONObject(i).getString("code"));
+    }
+
+
+
 
 }
 
