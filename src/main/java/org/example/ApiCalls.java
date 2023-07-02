@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ApiCalls {
 
-    private String deckId = "64wke0cthpf0";
+    private String deckId = "5x8ms5uq72sw";
 
 
 public void getNewDeck() {
@@ -28,7 +28,7 @@ public void getNewDeck() {
 
 }
 
-public String[] drawCard(String numberOfCardsToDraw) throws UnirestException {
+public String[] drawCardFromDeck(String numberOfCardsToDraw) throws UnirestException {
 
     String[]drawnCards = new String[7];
 
@@ -86,7 +86,7 @@ public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws
 
 
     String joinedString = String.join(",", cardsINeed);
-    System.out.println(joinedString); //Cardi B??
+  //  System.out.println(joinedString); //Cardi B??
 
     Unirest.setTimeouts(0, 0);
 
@@ -94,7 +94,7 @@ public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws
             Unirest.get("https://deckofcardsapi.com/api/deck/" +  deckId + "/pile/" + pileName + "/draw/?cards=" + joinedString)
                     .asJson();
 
-    System.out.println(response.getBody());
+  //  System.out.println(response.getBody());
 
 }
 
@@ -107,6 +107,7 @@ public ArrayList<String> listPiles(String pileName, String deckIds) throws Unire
     HttpResponse<JsonNode> response =
             Unirest.get("https://deckofcardsapi.com/api/deck/" + deckId + "/pile/" + pileName + "/list/")
                     .asJson();
+
 
     ArrayList<String> pile = new ArrayList<>();
 

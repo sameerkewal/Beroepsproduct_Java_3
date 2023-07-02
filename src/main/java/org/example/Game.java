@@ -4,7 +4,6 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -28,9 +27,9 @@ ApiCalls apiCalls;
         worden de gedrawn cards gestored
 */
 
-        String[] drawnCardsForPlayerOne = apiCalls.drawCard("7");
+        String[] drawnCardsForPlayerOne = apiCalls.drawCardFromDeck("7");
 
-        String[] drawnCardsForPlayerTwo = apiCalls.drawCard("7");
+        String[] drawnCardsForPlayerTwo = apiCalls.drawCardFromDeck("7");
 
 
 
@@ -50,31 +49,39 @@ ApiCalls apiCalls;
 
     public void playerOneTurn() throws UnirestException {
 
-       /* ArrayList<String> test = new ArrayList<>();
-
-        test.add("ass");
-        test.add("man");
-        test.add("Gavin zn hoofd");
-
-        System.out.println(Arrays.toString(test.toArray()));*/
-
-        /*apiCalls.listPiles("playerOne", null);
-        ArrayList<String> pilePlayerTwo = apiCalls.listPiles("playerTwo", null);
-
-        System.out.println("Player One, Which card do you want?");
-
-        String wantedCard = scanner.nextLine();
-        wantedCard = wantedCard.toUpperCase();
-
-        ArrayList<String> cardsINeed = apiCalls.searchPileForCardContainingThisNumberOrChar(pilePlayerTwo, wantedCard);//todo: remove hardcoded variables maybe?
-
-        apiCalls.drawingFromPile(cardsINeed, "playerTwo");
-
-
-        apiCalls.addingToPiles(null, "playerOne", cardsINeed.toArray(new String[0]));*/
 
         apiCalls.listPiles("playerOne", null);
+        ArrayList<String> pilePlayerTwo = apiCalls.listPiles("playerTwo", null);
 
+        while(true) {
+
+            System.out.println("Player One, Which card do you want?");
+
+            String wantedCard = scanner.nextLine();
+            wantedCard = wantedCard.toUpperCase();
+
+            ArrayList<String> cardsINeed = apiCalls.searchPileForCardContainingThisNumberOrChar(pilePlayerTwo, wantedCard);//todo: remove hardcoded variables maybe?
+
+
+            if (cardsINeed.isEmpty()) {
+                System.out.println("Go Fish!");
+                String[] goFished = apiCalls.drawCardFromDeck("1");
+                System.out.println(goFished[0]);
+                if (goFished[0].contains(wantedCard)) {
+                    System.out.println("yippeee");
+                    break;
+                }
+            } else {
+
+
+                apiCalls.drawingFromPile(cardsINeed, "playerTwo");
+
+
+                apiCalls.addingToPiles(null, "playerOne", cardsINeed.toArray(new String[0]));
+
+
+            }
+        }
 
 
 
