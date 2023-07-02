@@ -2,7 +2,9 @@ package org.example;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-import java.sql.SQLOutput;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
@@ -39,7 +41,7 @@ ApiCalls apiCalls;
 
 
 
-       // apiCalls.listPiles("playerOne", null);
+        apiCalls.listPiles("playerOne", null);
        // apiCalls.listPiles("playerTwo", null);
 
     }
@@ -48,18 +50,31 @@ ApiCalls apiCalls;
 
     public void playerOneTurn() throws UnirestException {
 
+       /* ArrayList<String> test = new ArrayList<>();
+
+        test.add("ass");
+        test.add("man");
+        test.add("Gavin zn hoofd");
+
+        System.out.println(Arrays.toString(test.toArray()));*/
+
+        /*apiCalls.listPiles("playerOne", null);
+        ArrayList<String> pilePlayerTwo = apiCalls.listPiles("playerTwo", null);
+
+        System.out.println("Player One, Which card do you want?");
+
+        String wantedCard = scanner.nextLine();
+        wantedCard = wantedCard.toUpperCase();
+
+        ArrayList<String> cardsINeed = apiCalls.searchPileForCardContainingThisNumberOrChar(pilePlayerTwo, wantedCard);//todo: remove hardcoded variables maybe?
+
+        apiCalls.drawingFromPile(cardsINeed, "playerTwo");
+
+
+        apiCalls.addingToPiles(null, "playerOne", cardsINeed.toArray(new String[0]));*/
 
         apiCalls.listPiles("playerOne", null);
 
-
-        System.out.println("Which card do you want?");
-
-        String wantedCard = scanner.nextLine();
-
-
-        //if(playerTwo.has(wantedCard)){
-        //perform some swap
-        // }
 
 
 
@@ -71,3 +86,12 @@ ApiCalls apiCalls;
     //if player two has the card number, dan moet hij alles ervan geven
 
 }
+
+
+/* for sameer:
+kings
+queens
+jacks
+ace
+niet genummerden die equal kunnen zijn!!!!!!!
+ */

@@ -6,9 +6,12 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+
 
 public class ApiCalls {
+
+    private String deckId = "64wke0cthpf0";
 
 
 public void getNewDeck() {
@@ -32,7 +35,7 @@ public String[] drawCard(String numberOfCardsToDraw) throws UnirestException {
     Unirest.setTimeouts(0, 0);
 
         HttpResponse<JsonNode> response =
-                Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/draw/?count="+numberOfCardsToDraw)
+                Unirest.get("https://deckofcardsapi.com/api/deck/" +  deckId + "/draw/?count="+numberOfCardsToDraw)
                 .asJson();
 
  //  System.out.println(response.getBody().getObject().getJSONArray("cards"));
@@ -58,7 +61,7 @@ public void reshuffle(){
 }
 
 
-public void addingToPiles(String deckId, String pileName, String[] cardsToAdd) throws UnirestException {
+public void addingToPiles(String deckIds, String pileName, String[] cardsToAdd) throws UnirestException {
 
 
     String joinedString = String.join(",", cardsToAdd);
@@ -68,7 +71,7 @@ public void addingToPiles(String deckId, String pileName, String[] cardsToAdd) t
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/pile/" + pileName + "/add/?cards="+ joinedString)
+            Unirest.get("https://deckofcardsapi.com/api/deck/" + deckId + "/pile/" + pileName + "/add/?cards="+ joinedString)
                     .asJson();
 
    // System.out.println(response.getBody());
@@ -76,27 +79,36 @@ public void addingToPiles(String deckId, String pileName, String[] cardsToAdd) t
 }
 
 
-public void playerOnePile(String drawnCard) throws UnirestException {
-    System.out.println(drawnCard);
+public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws UnirestException {
+
+
+
+
+
+    String joinedString = String.join(",", cardsINeed);
+    System.out.println(joinedString); //Cardi B??
+
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/pile/playerOne/add/?cards="+drawnCard)
+            Unirest.get("https://deckofcardsapi.com/api/deck/" +  deckId + "/pile/" + pileName + "/draw/?cards=" + joinedString)
                     .asJson();
 
     System.out.println(response.getBody());
 
-
-
-
 }
 
-public void listPiles(String pileName, String deckId) throws UnirestException {
+
+
+
+public ArrayList<String> listPiles(String pileName, String deckIds) throws UnirestException {
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/bazh3bdkxard/pile/" + pileName + "/list/")
+            Unirest.get("https://deckofcardsapi.com/api/deck/" + deckId + "/pile/" + pileName + "/list/")
                     .asJson();
+
+    ArrayList<String> pile = new ArrayList<>();
 
     JSONArray pileCards = response.getBody().
                           getObject().
@@ -104,11 +116,15 @@ public void listPiles(String pileName, String deckId) throws UnirestException {
                           getJSONObject(pileName).
                           getJSONArray("cards");
 
-    System.out.println(pileCards.length());
+
 
     for(int i = 0; i<pileCards.length(); i++) {
-        System.out.println(pileCards.getJSONObject(i).getString("code"));
+       pile.add(pileCards.getJSONObject(i).getString("code"));
     }
+
+    System.out.println("player " + pileName + "cards: " + pile);
+
+   return pile;
 
 
 
@@ -126,8 +142,21 @@ public void returnCardsToDeck(){
 }
 
 
+//todo: move this to an utility class or some shit dawg(static class)
+public ArrayList<String> searchPileForCardContainingThisNumberOrChar(ArrayList<String>pile, String number){
+
+    ArrayList<String>cardsOtherPlayerHas = new ArrayList<>();
+
+    pile.forEach(element->{
+        if(element.contains(number)){
+           cardsOtherPlayerHas.add(element);
+        }
+    });
 
 
+    return cardsOtherPlayerHas;
+
+}
 
 
 

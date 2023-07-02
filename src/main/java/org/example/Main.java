@@ -11,10 +11,11 @@ public class Main {
 
 
 
-     Game gaem = new Game();
-    //gaem.start();
 
-     gaem.playerOneTurn();
+     Game gaem = new Game();
+   // gaem.start();
+
+   gaem.playerOneTurn();
 
         }
     }
