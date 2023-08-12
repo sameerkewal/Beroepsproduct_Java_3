@@ -40,7 +40,7 @@ ApiCalls apiCalls;
 
 
 
-        apiCalls.listPiles("playerOne", null);
+     //   apiCalls.listPiles("playerOne", null);
        // apiCalls.listPiles("playerTwo", null);
 
     }
@@ -50,10 +50,9 @@ ApiCalls apiCalls;
     public void playerOneTurn() throws UnirestException {
 
 
-        apiCalls.listPiles("playerOne", null);
+       apiCalls.listPiles("playerOne", null);
         ArrayList<String> pilePlayerTwo = apiCalls.listPiles("playerTwo", null);
 
-        while(true) {
 
             System.out.println("Player One, Which card do you want?");
 
@@ -61,16 +60,19 @@ ApiCalls apiCalls;
             wantedCard = wantedCard.toUpperCase();
 
             ArrayList<String> cardsINeed = apiCalls.searchPileForCardContainingThisNumberOrChar(pilePlayerTwo, wantedCard);//todo: remove hardcoded variables maybe?
-
+                System.out.println(cardsINeed);
 
             if (cardsINeed.isEmpty()) {
                 System.out.println("Go Fish!");
                 String[] goFished = apiCalls.drawCardFromDeck("1");
-                System.out.println(goFished[0]);
-                if (goFished[0].contains(wantedCard)) {
+                System.out.println(goFished[0]); //now we add to pike
+                apiCalls.addingToPiles(null, "playerOne", goFished);
+
+                apiCalls.listPiles("playerOne", null);
+             /*   if (goFished[0].contains(wantedCard)) {
                     System.out.println("yippeee");
                     break;
-                }
+                }*/
             } else {
 
 
@@ -79,14 +81,55 @@ ApiCalls apiCalls;
 
                 apiCalls.addingToPiles(null, "playerOne", cardsINeed.toArray(new String[0]));
 
-
-            }
         }
 
 
 
 
     }
+
+
+    public void playerTwoTurn() throws UnirestException {
+
+
+        apiCalls.listPiles("playerTwo", null);
+        ArrayList<String> pilePlayerOne = apiCalls.listPiles("playerOne", null);
+
+
+        System.out.println("Player Two, Which card do you want?");
+
+        String wantedCard = scanner.nextLine();
+        wantedCard = wantedCard.toUpperCase();
+
+        ArrayList<String> cardsINeed = apiCalls.searchPileForCardContainingThisNumberOrChar(pilePlayerOne, wantedCard);//todo: remove hardcoded variables maybe?
+        System.out.println(cardsINeed);
+
+        if (cardsINeed.isEmpty()) {
+            System.out.println("Go Fish!");
+            String[] goFished = apiCalls.drawCardFromDeck("1");
+            System.out.println(goFished[0]); //now we add to pike
+            apiCalls.addingToPiles(null, "playerTwo", goFished);
+
+            apiCalls.listPiles("playerTwo", null);
+             /*   if (goFished[0].contains(wantedCard)) {
+                    System.out.println("yippeee");
+                    break;
+                }*/
+        } else {
+
+
+            apiCalls.drawingFromPile(cardsINeed, "playerOne");
+
+
+            apiCalls.addingToPiles(null, "playerTwo", cardsINeed.toArray(new String[0]));
+
+        }
+
+
+
+
+    }
+
 
 
     //Player one moet kijken welke kaart hij wilt vragen

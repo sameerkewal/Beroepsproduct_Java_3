@@ -7,16 +7,19 @@ public class Main {
     public static void main(String[] args) throws UnirestException {
 
         ApiCalls apiCalls = new ApiCalls();
-        //apiCalls.getNewDeck();
+       // apiCalls.getNewDeck();
 
 
 
 
      Game gaem = new Game();
-   // gaem.start();
+     gaem.start();
 
-   gaem.playerOneTurn();
+        while(true) {
+            gaem.playerOneTurn();
+            gaem.playerTwoTurn();
 
+        }
         }
     }
 

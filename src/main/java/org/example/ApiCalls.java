@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class ApiCalls {
 
-    private String deckId = "5x8ms5uq72sw";
+    private String deckId = "51he4iiedjm8";
 
 
 public void getNewDeck() {
@@ -67,7 +67,7 @@ public void addingToPiles(String deckIds, String pileName, String[] cardsToAdd) 
     String joinedString = String.join(",", cardsToAdd);
 
 
-    //todo: make different piles for player1_hand/player2_hand/set_pile maybe
+    //todo: make different piles for player1_hand/player2_hand/set_pile maybe ig we did this?
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
@@ -78,15 +78,11 @@ public void addingToPiles(String deckIds, String pileName, String[] cardsToAdd) 
 
 }
 
-
+//Volgensmij wordt dit voor meerdere dingen gebruikt, 1 waarvan om die kaarten van 1 player te adden op een andere zn pile
 public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws UnirestException {
 
-
-
-
-
     String joinedString = String.join(",", cardsINeed);
-  //  System.out.println(joinedString); //Cardi B??
+   // System.out.println("does this work and what it do: " + joinedString); //Cardi B??//to append
 
     Unirest.setTimeouts(0, 0);
 
@@ -153,7 +149,6 @@ public ArrayList<String> searchPileForCardContainingThisNumberOrChar(ArrayList<S
            cardsOtherPlayerHas.add(element);
         }
     });
-
 
     return cardsOtherPlayerHas;
 
