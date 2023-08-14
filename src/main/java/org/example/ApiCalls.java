@@ -139,6 +139,7 @@ public ArrayList<String> listPiles(String pileName, String deckIds) throws Unire
 
 }catch (JSONException e){
         System.out.println(e.getMessage()); //just fix this
+         //make this return an array with the error msg as an element daarna ga je naar check method
 
     }
 

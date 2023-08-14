@@ -167,7 +167,8 @@ public class Game {
     //Wincondition time babyyyyy:
     //Run this bad boy every turn?(probably after every turn)
     private void winConditionCheck() throws UnirestException {
-
+                            //if array first element is an error, dont do this check
+                            //Otherwise do the check!
         if(apiCalls.listPiles("winPlayerOne", null).size()>apiCalls.listPiles("winPlayerTwo", null).size()){
             System.out.println("Omgggg player one you wonnnnnn!!!!!! <333 :3333");
         } else {
