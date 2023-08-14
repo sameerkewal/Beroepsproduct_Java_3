@@ -6,15 +6,14 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 public class Main {
     public static void main(String[] args) throws UnirestException {
 
-        ApiCalls apiCalls = new ApiCalls();
-       // apiCalls.getNewDeck();
+        /*ApiCalls apiCalls = new ApiCalls();
+        apiCalls.getNewDeck();*/
 
 
 
 
      Game gaem = new Game();
-     gaem.start();
-
+//    gaem.start();
         while(true) {
             gaem.playerOneTurn();
             gaem.playerTwoTurn();
@@ -23,3 +22,4 @@ public class Main {
         }
     }
 
+//Bij het stelen van kaarten verdwijnt 1 kaart randomly?

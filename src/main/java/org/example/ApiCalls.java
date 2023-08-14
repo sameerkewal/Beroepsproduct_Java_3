@@ -5,13 +5,18 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONArray;
+import org.json.JSONException;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 
 public class ApiCalls {
 
-    private String deckId = "51he4iiedjm8";
+    private String deckId = "pcrp1kyphwc7";
+    private String altDeckId="okcn51rzj9ce";
 
 
 public void getNewDeck() {
@@ -79,7 +84,8 @@ public void addingToPiles(String deckIds, String pileName, String[] cardsToAdd) 
 }
 
 //Volgensmij wordt dit voor meerdere dingen gebruikt, 1 waarvan om die kaarten van 1 player te adden op een andere zn pile
-public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws UnirestException {
+public String drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws UnirestException {
+    System.out.println("card i need is: " + cardsINeed);
 
     String joinedString = String.join(",", cardsINeed);
    // System.out.println("does this work and what it do: " + joinedString); //Cardi B??//to append
@@ -87,10 +93,22 @@ public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws
     Unirest.setTimeouts(0, 0);
 
     HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/" +  deckId + "/pile/" + pileName + "/draw/?cards=" + joinedString)
-                    .asJson();
+            null;
 
-  //  System.out.println(response.getBody());
+        response = Unirest.get("https://deckofcardsapi.com/api/deck/" +  deckId + "/pile/" + pileName + "/draw/?cards=" + joinedString)
+                .asJson();
+
+    JSONArray sevenCards =  response.getBody().getObject().getJSONArray("cards");
+//    listPiles(pileName, null);
+//    System.out.println(response.getBody());
+
+    String[] drawnCards=new String[10];
+    for(int i = 0; i< sevenCards.length(); i++){
+        drawnCards[i]=sevenCards.getJSONObject(i).getString("code");
+    }
+    return drawnCards[0];
+
+//    return "4S";
 
 }
 
@@ -100,14 +118,18 @@ public void drawingFromPile(ArrayList<String>cardsINeed, String pileName) throws
 public ArrayList<String> listPiles(String pileName, String deckIds) throws UnirestException {
     Unirest.setTimeouts(0, 0);
 
-    HttpResponse<JsonNode> response =
-            Unirest.get("https://deckofcardsapi.com/api/deck/" + deckId + "/pile/" + pileName + "/list/")
-                    .asJson();
-
-
+    HttpResponse<JsonNode> response = null;
     ArrayList<String> pile = new ArrayList<>();
+    JSONArray pileCards = new JSONArray();
 
-    JSONArray pileCards = response.getBody().
+    try {
+
+                response =
+                Unirest.get("https://deckofcardsapi.com/api/deck/" + deckId + "/pile/" + pileName + "/list/")
+                        .asJson();
+
+
+     pileCards = response.getBody().
                           getObject().
                           getJSONObject("piles").
                           getJSONObject(pileName).
@@ -115,11 +137,20 @@ public ArrayList<String> listPiles(String pileName, String deckIds) throws Unire
 
 
 
+}catch (JSONException e){
+        System.out.println(e.getMessage()); //just fix this
+
+    }
+
     for(int i = 0; i<pileCards.length(); i++) {
        pile.add(pileCards.getJSONObject(i).getString("code"));
     }
 
-    System.out.println("player " + pileName + "cards: " + pile);
+
+//remove this line of code ffs:
+
+    pile.sort((a, b)-> b.substring(0, 1).compareTo(a.substring(0, 1)));
+    System.out.println("player " + pileName + " cards: " + pile + " and his hand has " + pile.size() + " cards");
 
    return pile;
 
@@ -153,6 +184,54 @@ public ArrayList<String> searchPileForCardContainingThisNumberOrChar(ArrayList<S
     return cardsOtherPlayerHas;
 
 }
+
+private String[] drawSpecificCardFromDeck(String deckId, String card) throws UnirestException {
+    int cardCounter = 0;
+
+    int leftLimit = 97; // letter 'a'
+    int rightLimit = 122; // letter 'z'
+    int targetStringLength = 10;
+    Random random = new Random();
+
+    String generatedString = random.ints(leftLimit, rightLimit + 1)
+            .limit(targetStringLength)
+            .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+            .toString();
+
+
+
+    String[]drawnCards = new String[52];
+    HttpResponse<JsonNode> response =
+            Unirest.get("https://deckofcardsapi.com/api/deck/new/")
+                    .asJson();
+
+    String newDeckId = response.getBody().getObject().get("deck_id").toString();
+    HttpResponse<JsonNode> response2 =
+            Unirest.get("https://deckofcardsapi.com/api/deck/" + newDeckId + "/draw/?count=52")
+                    .asJson();
+
+    JSONArray sevenCards =  response2.getBody().getObject().getJSONArray("cards");
+    for(int i = 0; i< sevenCards.length(); i++){
+        drawnCards[i]=sevenCards.getJSONObject(i).getString("code");
+    }
+
+    addingToPiles(null, generatedString, drawnCards);
+    ArrayList<String>cardToGetFromPile = new ArrayList<>();
+    cardToGetFromPile.add(card);
+    String newDeck = drawingFromPile(cardToGetFromPile, generatedString);
+
+    listPiles(generatedString, null);
+
+    System.out.println("card you wanted was " + card + " and u got " + newDeck);
+    return drawnCards;
+}
+
+public void test(String cardToDraw) throws UnirestException {
+    String[] cardsDrawn = drawSpecificCardFromDeck(null, cardToDraw);
+    System.out.println(cardToDraw);
+   /// addingToPiles(null, "playerOne", cardsDrawn); fix
+}
+
 
 
 
